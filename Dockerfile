@@ -3,6 +3,9 @@ FROM golang:1.21-alpine as builder
 
 WORKDIR /app
 
+ARG VERSION=dev
+ARG COMMIT=abcd
+
 ENV CGO_ENABLED=false\
     GOOS=linux\
     GOARCH=amd64
@@ -16,6 +19,7 @@ COPY . .
 
 RUN go build -o dexus cmd/main.go
 
+RUN go build -o dexus -ldflags "-X main.Version=${VERSION} -X main.Commit=${COMMIT}" cmd/main.go
 
 FROM scratch as final
 
