@@ -4,7 +4,7 @@ on:
   push:
     # Does not run on a tag push
     branches:
-      - "*"
+      - "main"
     paths-ignore:
       - '**.md'
   pull_request:
@@ -30,7 +30,7 @@ jobs:
       - name: Build
         run: ./scripts/build.sh
       - name: Test
-        run: go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
+        run: go test -v ./... -race -coverprofile=coverage.out -covermode=atomic
   docker-build:
     runs-on: ubuntu-latest
     steps:
