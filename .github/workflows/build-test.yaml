@@ -1,0 +1,57 @@
+name: Build And Test
+
+on:
+  push:
+    # Does not run on a tag push
+    branches:
+      - "*"
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  Build:
+    strategy:
+      matrix:
+        go-version: [1.21.0]
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Setup Go ${{ matrix.go }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Fetch Repository
+        uses: actions/checkout@v2
+      - name: Tidy
+        run: go mod tidy
+      - name: Build
+        run: ./scripts/build.sh
+      - name: Test
+        run: go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Repository
+        uses: actions/checkout@v3
+      - name: Build Image
+        run: make docker-build
+      - name: Run Image
+        run: make docker-run
+      - name: Deploy Image
+        run: echo 'TODO'
+
+  golangci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+          cache: false
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.54
