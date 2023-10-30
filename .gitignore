@@ -1,0 +1,5 @@
+Session.vim
+build/
+dist/
+coverage.out
+coverage.html
