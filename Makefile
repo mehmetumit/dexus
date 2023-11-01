@@ -18,7 +18,7 @@ exec: build
 
 .PHONY: run
 run:
-	@go run cmd/main.go
+	@$(SCRIPTS)/run.sh
 
 .PHONY: test
 test:
@@ -28,7 +28,7 @@ test-coverage-html: test
 
 .PHONY: live-reload
 live-reload:
-	@find . -type f -name '*.go' | entr -r go run cmd/main.go
+	@find . -type f -name '*.go' | entr -r $(SCRIPTS)/run.sh
 
 .PHONY: docker-build
 docker-build:
