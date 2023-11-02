@@ -34,7 +34,11 @@ func TestMemCache_GenKey_Set_Get_GetNotFound_Flush_ExpireAfter(t *testing.T) {
 				t.Errorf("Expected error nil, got %v", err)
 			}
 			keyMap[hashKey] = k
-			memCache.Set(ctx, hashKey, v, cacheTTL)
+			err = memCache.Set(ctx, hashKey, v, cacheTTL)
+			if err != nil {
+				t.Errorf("Expected error nil, got %v", err)
+			}
+
 		}
 		for k, v := range keyMap {
 			val, err := memCache.Get(ctx, k)
@@ -82,7 +86,10 @@ func TestMemCache_GenKey_Set_Get_GetNotFound_Flush_ExpireAfter(t *testing.T) {
 			if err != nil {
 				t.Errorf("Expected error nil, got %v", err)
 			}
-			memCache.Set(ctx, hashKey, v, cacheTTL)
+			err = memCache.Set(ctx, hashKey, v, cacheTTL)
+			if err != nil {
+				t.Errorf("Expected error nil, got %v", err)
+			}
 		}
 		for k := range keyMap {
 			err := memCache.Delete(ctx, k)
@@ -103,7 +110,10 @@ func TestMemCache_GenKey_Set_Get_GetNotFound_Flush_ExpireAfter(t *testing.T) {
 			if err != nil {
 				t.Errorf("Expected error nil, got %v", err)
 			}
-			memCache.Set(ctx, hashKey, v, ttl)
+			err = memCache.Set(ctx, hashKey, v, ttl)
+			if err != nil {
+				t.Errorf("Expected error nil, got %v", err)
+			}
 		}
 
 		time.Sleep(ttl * 2)

@@ -61,7 +61,10 @@ func TestApp_FindRedirect(t *testing.T) {
 		app.RedirectionRepo.(*mocks.MockRedirectionRepo).SetMockRedirectionMap(redirectionMap)
 		ctx := context.Background()
 		for k := range redirectionMap {
-			app.FindRedirect(ctx, k)
+			_, err := app.FindRedirect(ctx, k)
+			if err != nil {
+				t.Errorf("Expected err nil, got %v", err)
+			}
 		}
 		for k, v := range redirectionMap {
 			keyHash, err := app.Cacher.GenKey(ctx, k)
