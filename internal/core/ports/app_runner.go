@@ -6,5 +6,5 @@ import (
 )
 
 type AppRunner interface {
-	FindRedirect(ctx context.Context, u *url.URL) (*url.URL, error)
+	FindRedirect(ctx context.Context, p string) (*url.URL, error)
 }

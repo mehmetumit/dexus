@@ -3,8 +3,13 @@ package app
 import (
 	"context"
 	"net/url"
+	"time"
 
 	"github.com/mehmetumit/dexus/internal/core/ports"
+)
+
+var (
+	defaultCacheTTL = 10 * time.Second
 )
 
 type AppConfig struct {
@@ -22,9 +27,9 @@ func NewApp(cfg AppConfig) *App {
 	}
 }
 
-func (a *App) FindRedirect(ctx context.Context, u *url.URL) (*url.URL, error) {
+func (a *App) FindRedirect(ctx context.Context, p string) (*url.URL, error) {
 	var dataTo string
-	key, err := a.Cacher.GenKey(ctx, u.String())
+	key, err := a.Cacher.GenKey(ctx, p)
 	if err != nil {
 		a.Logger.Error("internal key generation error:", err)
 		return nil, err
@@ -35,16 +40,24 @@ func (a *App) FindRedirect(ctx context.Context, u *url.URL) (*url.URL, error) {
 			a.Logger.Error("internal cache error:", err)
 			return nil, err
 		}
-		a.Logger.Debug("Cache miss:", string(cachedTo))
-		redirectionTo, err := a.RedirectionRepo.Get(ctx, u.String())
+		a.Logger.Debug("Cache miss:", p)
+		redirectionTo, err := a.RedirectionRepo.Get(ctx, p)
 		if err != nil {
-			a.Logger.Error("internal redirection repo error:", err)
+			if err == ports.ErrRedirectionNotFound {
+				a.Logger.Error("redirection not found on repo:", err)
+			} else {
+				a.Logger.Error("internal cache error:", err)
+			}
 			return nil, err
+		}
+		//Set cache after cache miss
+		if err := a.Cacher.Set(ctx, key, redirectionTo, defaultCacheTTL); err != nil {
+			a.Logger.Error("cache set error:", err)
 		}
 		dataTo = redirectionTo
 
 	} else {
-		dataTo = string(cachedTo)
+		dataTo = cachedTo
 		a.Logger.Debug("Cache hit", dataTo)
 	}
 	to, err := url.Parse(dataTo)
