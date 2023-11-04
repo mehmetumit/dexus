@@ -12,13 +12,11 @@ func newTestApp(t testing.TB) *App {
 	t.Helper()
 	mockLogger := mocks.NewMockLogger()
 	mockRedirectionRepo := mocks.NewMockRedirectionRepo()
-	mockCacher := mocks.NewMockCacher()
 	mockLogger.SetDebugLevel(true)
 	return NewApp(
 		AppConfig{
 			Logger:          mockLogger,
 			RedirectionRepo: mockRedirectionRepo,
-			Cacher:          mockCacher,
 		},
 	)
 }
@@ -29,7 +27,11 @@ func TestApp_FindRedirect(t *testing.T) {
 		"test2": "https://test2.com",
 		"test3": "https://test3.com",
 	}
-	notFoundKeys := []string{"not-found", "not/found", ""}
+	notFoundKeys := []string{
+		"not-found",
+		"not/found",
+		"",
+	}
 	t.Run("Find Redirect From Repo", func(t *testing.T) {
 		app := newTestApp(t)
 		ctx := context.Background()
@@ -55,35 +57,6 @@ func TestApp_FindRedirect(t *testing.T) {
 				t.Errorf("Expected err %v, got %v", ports.ErrRedirectionNotFound, err)
 			}
 		}
-	})
-	t.Run("Find Redirect From Cache", func(t *testing.T) {
-		app := newTestApp(t)
-		app.RedirectionRepo.(*mocks.MockRedirectionRepo).SetMockRedirectionMap(redirectionMap)
-		ctx := context.Background()
-		for k := range redirectionMap {
-			_, err := app.FindRedirect(ctx, k)
-			if err != nil {
-				t.Errorf("Expected err nil, got %v", err)
-			}
-		}
-		for k, v := range redirectionMap {
-			keyHash, err := app.Cacher.GenKey(ctx, k)
-			if err != nil {
-				t.Errorf("Expected err nil, got %v", err)
-			}
-			gotVal, err := app.Cacher.Get(ctx, keyHash)
-			if err != nil {
-				t.Errorf("Expected err nil, got %v", err)
-			}
-			if gotVal != v {
-				t.Errorf("Expected cache val %v, got %v", v, gotVal)
-			}
-			_, err = app.FindRedirect(ctx, k)
-			if err != nil {
-				t.Errorf("Expected err nil, got %v", err)
-			}
-		}
-
 	})
 
 }
