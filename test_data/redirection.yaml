@@ -1,0 +1,3 @@
+redirections:
+  /abc : https://google.com
+  /xyz : https://github.com
