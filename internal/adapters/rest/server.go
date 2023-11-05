@@ -94,7 +94,11 @@ func NewServer(logger ports.Logger, config *ServerConfig, app ports.AppRunner, o
 	}
 }
 func (s *Server) initHandlers(r *chi.Mux) {
+	r.HandleFunc("/health", s.HealthHandler)
 	r.HandleFunc("/*", s.RedirectionHandler)
+}
+func (s *Server) HealthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }
 func (s *Server) RedirectionHandler(w http.ResponseWriter, r *http.Request) {
 	to, err := s.app.FindRedirect(r.Context(), r.URL.String())
