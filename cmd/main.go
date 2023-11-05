@@ -25,7 +25,7 @@ func main() {
 	logger := stdlog.NewStdLog(debugLevel)
 	logger.Info(fmt.Sprintf("Version: %s | Commit: %s", Version, Commit))
 	cacher := memcache.NewMemCache(logger)
-	fPath := filepath.FromSlash("test_data/redirection.yaml")
+	fPath := filepath.FromSlash("configs/redirection.yaml")
 	redirectRepo, err := fileredirect.NewYamlRedirect(logger, fPath)
 	if err != nil {
 		os.Exit(1)

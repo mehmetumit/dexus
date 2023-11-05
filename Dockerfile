@@ -23,4 +23,6 @@ FROM scratch as final
 
 COPY --from=builder /app/dexus .
 
+COPY --from=builder /app/configs /configs
+
 ENTRYPOINT [ "./dexus" ]
