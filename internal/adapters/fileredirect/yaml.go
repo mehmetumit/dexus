@@ -27,7 +27,12 @@ type YamlRedirect struct {
 
 func initStore(logger ports.Logger, filePath string) (*RedirectionStore, error) {
 	f, err := os.Open(filePath)
-	defer f.Close()
+	defer func() {
+		err := f.Close()
+		if err != nil{
+			logger.Error("unable to close file:",err)
+		}
+	}()
 	if err != nil {
 		logger.Error(ErrUnableToOpenYamlFile, err)
 		return nil, ErrUnableToOpenYamlFile
@@ -40,7 +45,6 @@ func initStore(logger ports.Logger, filePath string) (*RedirectionStore, error) 
 		return nil, ErrUnableToDecodeYamlFile
 	}
 	return &store, nil
-
 }
 func NewYamlRedirect(logger ports.Logger, filePath string) (*YamlRedirect, error) {
 	store, err := initStore(logger, filePath)

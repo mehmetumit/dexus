@@ -7,18 +7,17 @@ import (
 	"github.com/mehmetumit/dexus/internal/core/ports"
 )
 
-
 type CacheInterceptor struct {
 	cacher ports.Cacher
 	logger ports.Logger
-	ttl time.Duration
+	ttl    time.Duration
 }
 
 func NewCacheInterceptor(c ports.Cacher, l ports.Logger, ttl time.Duration) CacheInterceptor {
 	return CacheInterceptor{
 		cacher: c,
 		logger: l,
-		ttl: ttl,
+		ttl:    ttl,
 	}
 
 }
@@ -53,16 +52,18 @@ func (ch *CacheInterceptor) InterceptHandler(next http.Handler) http.Handler {
 
 			if err != nil || len(cacheData) == 0 {
 				ch.logger.Debug("Cache miss:", hashURL)
-				if err != ports.ErrKeyNotFound{
-					ch.logger.Error("internal cache error:",err)
+				if err != ports.ErrKeyNotFound {
+					ch.logger.Error("internal cache error:", err)
 				}
 				// Get response of request by sending it to next
 				next.ServeHTTP(proxyWriter, r)
 				if proxyWriter.StatusCode == http.StatusFound {
 					// Set cache using redirection location which stored in proxyWriter
-					ch.cacher.Set(ctx, hashURL, proxyWriter.GetLocation(), ch.ttl)
+					if err := ch.cacher.Set(ctx, hashURL, proxyWriter.GetLocation(), ch.ttl); err != nil {
+						ch.logger.Error("unable to set cache err:", err)
+					}
 				}
-				return// Response already built using proxyWriter
+				return // Response already built using proxyWriter
 			}
 			// Don't send the request to the next
 			//Instead, respond to the client with cached data
@@ -71,7 +72,6 @@ func (ch *CacheInterceptor) InterceptHandler(next http.Handler) http.Handler {
 			w.Header().Add("x-cached-response", "true")
 
 			http.Redirect(w, r, cacheData, http.StatusFound)
-			return
 		}()
 	})
 }

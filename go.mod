@@ -9,4 +9,5 @@ require (
 	github.com/go-chi/cors v1.2.1 // indirect
 	github.com/google/uuid v1.4.0 // indirect
 	github.com/redis/go-redis/v9 v9.2.1 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

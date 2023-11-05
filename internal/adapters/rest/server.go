@@ -81,7 +81,7 @@ func NewServer(logger ports.Logger, config *ServerConfig, app ports.AppRunner, o
 		}
 	}()
 	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, os.Interrupt, os.Kill, syscall.SIGTERM)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGQUIT, syscall.SIGTERM)
 	sig := <-sigChan
 	logger.Info(fmt.Sprintf("SIGNAL:%s, Received terminate, graceful shutdown.", sig))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
