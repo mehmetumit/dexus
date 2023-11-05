@@ -6,10 +6,10 @@ on:
     branches:
       - "main"
     paths-ignore:
-      - '**.md'
+      - "**.md"
   pull_request:
     paths-ignore:
-      - '**.md'
+      - "**.md"
 
 jobs:
   Build:
@@ -39,7 +39,14 @@ jobs:
       - name: Build Image
         run: make docker-build
       - name: Run Image
-        run: make docker-run
+        run: |
+          docker run --name dexus -d -p 8080:8080 --rm dexus:latest
+          sleep 5
+          if [ ! "$(curl -fs localhost:8080/health)" ]; then
+            printf 'err: container is not running properly' >&2
+            exit 1
+          fi
+          docker stop dexus
       - name: Deploy Image
         run: echo 'TODO'
 
@@ -49,7 +56,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
         with:
-          go-version: '1.21'
+          go-version: "1.21"
           cache: false
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
