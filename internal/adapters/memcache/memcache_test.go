@@ -104,7 +104,7 @@ func TestMemCache_GenKey_Set_Get_GetNotFound_Flush_ExpireAfter(t *testing.T) {
 
 	})
 	t.Run("Expire After", func(t *testing.T) {
-		ttl := 500 * time.Millisecond
+		ttl := 50 * time.Millisecond
 		for k, v := range cacheMap {
 			hashKey, err := memCache.GenKey(ctx, k)
 			if err != nil {
