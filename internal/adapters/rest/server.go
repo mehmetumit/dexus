@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/mehmetumit/dexus/internal/adapters/rest/middleware"
 	"github.com/mehmetumit/dexus/internal/core/ports"
 
 	"github.com/go-chi/chi/v5"
@@ -30,8 +31,14 @@ type Server struct {
 	app    ports.AppRunner
 }
 
+type Option func(http.Handler) http.Handler
 
-func NewServer(logger ports.Logger, config *ServerConfig, app ports.AppRunner) {
+func WithCacher(c ports.Cacher, l ports.Logger, ttl time.Duration) Option {
+	cacheInterceptor := middleware.NewCacheInterceptor(c, l, ttl)
+	return cacheInterceptor.InterceptHandler
+}
+
+func NewServer(logger ports.Logger, config *ServerConfig, app ports.AppRunner, options ...Option) {
 	router := chi.NewRouter()
 	router.Use(chiMiddleware.Logger, chiMiddleware.Recoverer)
 	router.Use(cors.Handler(cors.Options{
@@ -44,6 +51,10 @@ func NewServer(logger ports.Logger, config *ServerConfig, app ports.AppRunner) {
 		AllowCredentials: true,
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
+	// Load optional middlewares
+	for _, op := range options {
+		router.Use(op)
+	}
 	s := &http.Server{
 		Addr:    config.Addr,
 		Handler: router,
