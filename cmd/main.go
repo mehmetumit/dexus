@@ -35,7 +35,7 @@ func main() {
 		RedirectionRepo: redirectRepo,
 	})
 	rest.NewServer(logger, &rest.ServerConfig{
-		Addr: "localhost:8080",
+		Addr: ":8080",
 		//IdleTimeout:  90 * time.Second,
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,

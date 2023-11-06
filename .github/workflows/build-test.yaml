@@ -42,7 +42,7 @@ jobs:
         run: |
           docker run --name dexus -d -p 8080:8080 --rm dexus:latest
           sleep 5
-          if [ ! "$(curl -fs localhost:8080/health)" ]; then
+          if ! curl -fs localhost:8080/health; then
             printf 'err: container is not running properly' >&2
             exit 1
           fi
