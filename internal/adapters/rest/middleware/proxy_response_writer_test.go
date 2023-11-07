@@ -23,7 +23,7 @@ func TestProxyResponseWriter_Write(t *testing.T) {
 		recorder := httptest.NewRecorder()
 		proxyWriter := newTestResponseWriter(t, recorder)
 		_, err := proxyWriter.Write([]byte(data))
-		if err != nil{
+		if err != nil {
 			t.Fatal("unable to write data to response writer:", err)
 		}
 		if !bytes.Equal(recorder.Body.Bytes(), []byte(data)) {

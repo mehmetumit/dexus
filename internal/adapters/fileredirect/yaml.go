@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	ErrStoreIsNotInitialized = errors.New("store is not initialized")
-	ErrUnableToOpenYamlFile = errors.New("unable to open the file")
+	ErrStoreIsNotInitialized  = errors.New("store is not initialized")
+	ErrUnableToOpenYamlFile   = errors.New("unable to open the file")
 	ErrUnableToDecodeYamlFile = errors.New("unable to decode yaml file")
 )
 
@@ -30,8 +30,8 @@ func initStore(logger ports.Logger, filePath string) (*RedirectionStore, error) 
 	f, err := os.Open(filepath.FromSlash(filePath))
 	defer func() {
 		err := f.Close()
-		if err != nil{
-			logger.Error("unable to close file:",err)
+		if err != nil {
+			logger.Error("unable to close file:", err)
 		}
 	}()
 	if err != nil {

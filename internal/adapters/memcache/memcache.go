@@ -18,7 +18,7 @@ type MemCache struct {
 
 func NewMemCache(l ports.Logger) *MemCache {
 	return &MemCache{
-		logger: l,
+		logger:   l,
 		cacheMap: make(CacheMap),
 	}
 
