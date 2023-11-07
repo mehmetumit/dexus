@@ -8,7 +8,7 @@
 
 ## About
 
-Dexus is a URL shortener that provides you with the ability to extend it dynamically according to your needs. You can utilize existing adapters or implement your own adapters based on ports. Afterward, you only need to inject these adapters in [cmd/main.go](./cmd/main.go). Contributions of any new adapters are welcome.
+Dexus is a URL shortener that provides you with the ability to extend it dynamically according to your needs. You can utilize existing [adapters](./internal/adapters) or implement your own adapters based on [ports](./internal/core/ports). Afterwards, you only need to inject these adapters in [cmd/main.go](./cmd/main.go). Contributions of any new adapters are welcome.
 
 ## Usage
 ### Using binary release
