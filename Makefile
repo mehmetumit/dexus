@@ -36,4 +36,4 @@ docker-build:
 
 .PHONY: docker-run
 docker-run:
-	@docker run --rm $(IMG):$(TAG)
+	@docker run -p 8080:8080 --rm $(IMG):$(TAG)
