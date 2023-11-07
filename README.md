@@ -1,7 +1,9 @@
 <h1 align="center">dexus</h1>
 <p align="center">
-	<img src="https://img.shields.io/github/stars/mehmetumit/dexus?color=yellow" alt="Stars"/>
-	<img src="https://img.shields.io/github/license/MehmetUmit/dexus" alt="License"/>
+	<img src="https://github.com/mehmetumit/dexus/actions/workflows/build-test.yaml/badge.svg"/>
+	<img src="https://github.com/mehmetumit/dexus/actions/workflows/release.yaml/badge.svg"/>
+	<a href="https://github.com/mehmetumit/dexus/stargazers"><img src="https://img.shields.io/github/stars/mehmetumit/dexus?color=yellow" alt="Stars"/></a>
+	<a href="https://github.com/mehmetumit/dexus/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mehmetumit/dexus" alt="License"/></a>
 </p>
 
 ---
