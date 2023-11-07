@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"time"
 
+	"github.com/mehmetumit/dexus/helper"
 	"github.com/mehmetumit/dexus/internal/adapters/fileredirect"
 	"github.com/mehmetumit/dexus/internal/adapters/memcache"
 	"github.com/mehmetumit/dexus/internal/adapters/rest"
@@ -20,13 +20,23 @@ var (
 
 // Composition root
 func main() {
-	//TODO env
-	debugLevel := true
-	logger := stdlog.NewStdLog(debugLevel)
+	// Load with these defaults if envs are not set
+	envCfg := helper.LoadConfigWithDefaults(helper.Config{
+		DebugLevel:       true,
+		Host:             "",
+		Port:             "8080",
+		ReadTimeoutMS:    1000 * time.Millisecond,
+		WriteTimeoutMS:   1000 * time.Millisecond,
+		CacheTTLSec:      60 * time.Second,
+		YamlRedirectPath: "configs/redirection.yaml",
+	})
+
+	logger := stdlog.NewStdLog(envCfg.DebugLevel)
 	logger.Info(fmt.Sprintf("Version: %s | Commit: %s", Version, Commit))
+
 	cacher := memcache.NewMemCache(logger)
-	fPath := filepath.FromSlash("configs/redirection.yaml")
-	redirectRepo, err := fileredirect.NewYamlRedirect(logger, fPath)
+
+	redirectRepo, err := fileredirect.NewYamlRedirect(logger, envCfg.YamlRedirectPath)
 	if err != nil {
 		os.Exit(1)
 	}
@@ -35,9 +45,9 @@ func main() {
 		RedirectionRepo: redirectRepo,
 	})
 	rest.NewServer(logger, &rest.ServerConfig{
-		Addr: ":8080",
+		Addr: envCfg.Host + ":" + envCfg.Port,
 		//IdleTimeout:  90 * time.Second,
-		ReadTimeout:  1 * time.Second,
-		WriteTimeout: 1 * time.Second,
-	}, appCore, rest.WithCacher(cacher, logger, 5*time.Second))
+		ReadTimeout:  envCfg.ReadTimeoutMS,
+		WriteTimeout: envCfg.WriteTimeoutMS,
+	}, appCore, rest.WithCacher(cacher, logger, envCfg.CacheTTLSec))
 }

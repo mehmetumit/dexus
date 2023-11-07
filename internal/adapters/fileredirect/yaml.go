@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/mehmetumit/dexus/internal/core/ports"
@@ -26,7 +27,7 @@ type YamlRedirect struct {
 }
 
 func initStore(logger ports.Logger, filePath string) (*RedirectionStore, error) {
-	f, err := os.Open(filePath)
+	f, err := os.Open(filepath.FromSlash(filePath))
 	defer func() {
 		err := f.Close()
 		if err != nil{
