@@ -1,6 +1,8 @@
 <h1 align="center">dexus</h1>
 <p align="center">
 	<img src="https://github.com/mehmetumit/dexus/actions/workflows/build-test.yaml/badge.svg"/>
+	<img src="https://goreportcard.com/badge/github.com/mehmetumit/dexus"/>
+	<a href="https://codecov.io/gh/mehmetumit/dexus"><img src="https://img.shields.io/codecov/c/github/mehmetumit/dexus/master.svg"/></a>
 	<img src="https://github.com/mehmetumit/dexus/actions/workflows/release.yaml/badge.svg"/>
 	<a href="https://github.com/mehmetumit/dexus/stargazers"><img src="https://img.shields.io/github/stars/mehmetumit/dexus?color=yellow" alt="Stars"/></a>
 	<a href="https://github.com/mehmetumit/dexus/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mehmetumit/dexus" alt="License"/></a>
